@@ -1,0 +1,23 @@
+<!-- 店舗情報削除確認モーダル -->
+<div th:fragment="store-delete-content" class="modal fade" id="deleteModal" tabindex="-1" role="dialog"
+	aria-labelledby="deleteModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="deleteModalLabel"><i class="fas fa-exclamation-triangle" style="color:red;"></i> 確認</h5>
+			</div>
+			<div class="modal-body">
+				<strong><span id="store-name"></strong></span>を本当に削除しますか？
+			</div>
+			<div class="modal-footer">
+				<form id="deleteForm" th:object="${storeDaleteForm}" th:action="@{/store/delete}" method="post">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+					<input type="hidden" id="storeId" name="storeId">
+					<input type="hidden" id="storeName" name="storeName">
+					<button type="submit" class="btn btn-primary">OK</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+

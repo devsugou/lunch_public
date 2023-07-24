@@ -1,0 +1,191 @@
+<!-- モーダルウィンドウ -->
+<div th:fragment="modal-content" class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+	<div class="modal-dialog modal-lg">
+
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="registerModalLabel">店舗登録</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+
+				<!-- 店舗登録フォーム -->
+				<form id="registerForm" th:object="${storeForm}" action="#" th:action="@{/index/storeregister}" method="post" enctype="multipart/form-data">
+					
+                    <!-- 店舗名 -->
+                    <div class="mb-3">
+                        <label for="storeName" class="form-label">店舗名<span class="bg-danger text-white ms-2 p-1" style="font-size: 12px;">必須</span></label>
+                        <input type="text" class="form-control" id="storeName" name="storeName" >
+                        <div class="form-error" id="storeNameError">
+                            <svg focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px;">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                            </svg>
+                            <span class="form-error-text"></span>
+                        </div>
+                    </div>
+
+                    <!-- 店舗の電話番号 -->
+					<div class="mb-3">
+						<label for="storePhoneNumber" class="form-label">電話番号</label>
+						<input type="text" class="form-control" id="storePhoneNumber" name="storePhoneNumber">
+						<div class="form-error" id="storePhoneNumberError">
+							<svg focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px;">
+								<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+							</svg>
+							<span class="form-error-text"></span>
+						</div>
+					</div>
+
+                    <!-- 店舗の住所 -->
+					<div class="mb-3">
+						<label for="storeAddress" class="form-label">住所</label><span class="bg-danger text-white ms-2 p-1" style="font-size: 12px;">必須</span></label>
+						<input type="text" class="form-control" id="storeAddress" name="storeAddress">
+						<div class="form-error" id="storeAddressError">
+							<svg focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px;">
+								<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+							</svg>
+							<span class="form-error-text"></span>
+						</div>
+					</div>
+
+                    <!-- 店舗のURL -->
+                    <div class="mb-3">
+                        <label for="storeUrl" class="form-label">店舗URL</label>
+                        <input type="text" class="form-control" id="storeUrl" name="storeUrl">
+                        <div class="form-error" id="storeUrlError">
+                            <svg focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px;">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                            </svg>
+                            <span class="form-error-text"></span>
+                        </div>
+                    </div>
+
+					<!-- 店舗の営業日 -->
+					<div class="mb-3">
+					    <label for="storeBusinessDay" class="form-label">営業日</label>
+					    <div id="storeBusinessDay" th:each="day : ${sessionData.daysOfWeek}">
+					        <div class="form-check">
+					            <input class="form-check-input" type="checkbox" th:id="${day}" th:value="${day}" name="storeBusinessDay"/>
+					            <label class="form-check-label" th:for="${day}" th:text="${day}"></label>
+					        </div>
+					    </div>
+					    <div class="form-error" id="storeBusinessDayError">
+					        <svg focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px;">
+					            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+					        </svg>
+					        <span class="form-error-text"></span>
+					    </div>
+					</div>
+						
+                    <!-- 店舗の営業時間 -->
+					<div class="mb-3">
+					    <label for="storeBusinessHours" class="form-label">営業時間</label>
+					    <div class="d-flex align-items-center">
+					        <input type="time" class="form-control" id="storeBusinessHoursFrom" name="storeBusinessHoursFrom" style="margin-right: 5px;">
+					        <div>-</div>
+					        <input type="time" class="form-control" id="storeBusinessHoursTo" name="storeBusinessHoursTo" style="margin-left: 5px;">
+					    </div>
+						<input type="hidden" id="storeBusinessHours" name="storeBusinessHours">
+					    <div class="form-error" id="storeBusinessHoursError">
+					        <svg focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px;">
+					            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+					        </svg>
+					        <span class="form-error-text"></span>
+					    </div>
+					</div>
+
+					<!-- 店舗の定休日 -->
+					<div class="mb-3">
+						<label for="storeRegularClosingDay" class="form-label">定休日（曜日）</label>
+						<select class="form-control" id="storeRegularClosingDay" name="storeRegularClosingDay">
+							<option value="">定休日を選択してください</option>
+							<option th:each="day : ${sessionData.daysOfWeek}" th:value="${day}" th:text="${day}"></option>
+						</select>
+						<div class="form-error" id="storeRegularClosingDayError">
+							<svg focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px;">
+								<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+							</svg>
+							<span class="form-error-text"></span>
+						</div>
+					</div>
+
+					<!-- 店舗画像 -->
+					<div class="mb-3">
+					    <label for="storeImage" class="form-label">店舗画像</label>
+					    <input type="file" class="form-control" id="storeImage" name="storeImage" accept="image/*">
+					    <div class="form-error" id="storeImageError">
+					        <svg focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px;">
+					            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+					        </svg>
+					        <span class="form-error-text"></span>
+					    </div>
+					</div>
+					<div id="image-hidden"></div>
+					<input type="hidden" id="croppedStoreImage" name="croppedStoreImage">
+    
+					<!-- 店舗の説明 -->
+					<div class="mb-3">
+					    <label for="storeDescription" class="form-label">店舗の説明</label>
+					    <textarea class="form-control" id="storeDescription" name="storeDescription" rows="2"></textarea>
+					    <div class="form-error" id="storeDescriptionError">
+					        <svg focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px;">
+					            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+					        </svg>
+					        <span class="form-error-text"></span>
+					    </div>
+					</div>
+    
+					<!-- ジャンルのプルダウンメニュー -->
+					<div class="mb-3">
+					    <label for="genreId" class="form-label">ジャンル<span class="bg-danger text-white ms-2 p-1" style="font-size: 12px;">必須</span></label>
+					    <select id="genreId" th:field="*{genreId}" class="form-control">
+					        <option value="0" th:selected="${genreId == 0}">選択してください</option>
+					        <option th:each="genreInfo : ${sessionData.genreList}" th:value="${genreInfo.genreId}" th:text="${genreInfo.genreName}" th:selected="${genreId == genreInfo.genreId}"></option>
+					    </select>
+                        <div class="form-error" id="genreIdError">
+                            <svg focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px;">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                            </svg>
+                            <span class="form-error-text"></span>
+                        </div>					    
+					</div>
+					
+					<!-- 距離のプルダウンメニュー -->
+					<div class="mb-3">
+					    <label for="distanceId" class="form-label">距離<span class="bg-danger text-white ms-2 p-1" style="font-size: 12px;">必須</span></label>
+					    <select id="distanceId" th:field="*{distanceId}" class="form-control">
+					        <option value="0" th:selected="${distanceId == 0}">選択してください</option>
+					        <option th:each="distanceInfo : ${sessionData.distanceList}" th:value="${distanceInfo.distanceId}" th:text="${distanceInfo.distanceName}" th:selected="${distanceId == distanceInfo.distanceId}"></option>
+					    </select>
+					    <div class="form-error" id="distanceIdError">
+                            <svg focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px;">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                            </svg>
+                            <span class="form-error-text"></span>
+                        </div>
+					</div>
+					
+					<!-- 評価スターのプルダウンメニュー -->
+					<div class="mb-3">
+					    <label for="evaluationStarId" class="form-label">評価<span class="bg-danger text-white ms-2 p-1" style="font-size: 12px;">必須</span></label>
+					    <select id="evaluationStarId" th:field="*{evaluationStarId}" class="form-control">
+					        <option value="0" th:selected="${evaluationStarId == 0}">選択してください</option>
+					        <option th:each="evaluationInfo : ${sessionData.evaluationStarList}" th:value="${evaluationInfo.evaluationStarId}" th:text="${evaluationInfo.evaluationStarCount}" th:selected="${evaluationStarId == evaluationInfo.evaluationStarId}"></option>
+					    </select>
+					    <div class="form-error" id="evaluationStarIdError">
+                            <svg focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px;">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                            </svg>
+                            <span class="form-error-text"></span>
+                        </div>
+					</div>
+					
+				</form>
+			</div>
+			<div class="modal-footer">
+			    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+			    <button type="button" class="btn btn-primary" id="registerButton" style="background-color: #3f87da;" onclick="submitRegisterForm()">登録</button>                
+			</div>
+		</div>
+	</div>
+</div>

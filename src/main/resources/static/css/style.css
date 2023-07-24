@@ -1,0 +1,11 @@
+.error-border {
+    border-color: red;
+}
+    
+.form-error-text path {
+    fill: red;
+}
+
+.form-error-text {
+    color: red;
+}

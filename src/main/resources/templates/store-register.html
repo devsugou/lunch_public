@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" th:fragment="meta"/>
+    <title>Lanth Map</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css}"/>
+    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css" th:href="@{/bootstrap/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" th:href="@{https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i}"/>
+    <link rel="stylesheet" href="../static/fonts/fontawesome-all.min.css" th:href="@{/fonts/fontawesome-all.min.css}"/>
+    <link rel="stylesheet" href="../static/fonts/font-awesome.min.css" th:href="@{/fonts/font-awesome.min.css}"/>
+    <link rel="stylesheet" href="../static/fonts/fontawesome5-overrides.min.css" th:href="@{/fonts/fontawesome5-overrides.min.css}"/>
+    <link rel="stylesheet" href="../static/css/User-Payment-Overview-Rows---Panel-Container.css" th:href="@{/css/User-Payment-Overview-Rows---Panel-Container.css}"/>
+    <link rel="stylesheet" href="../static/css/style.css" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css}"/>
+</head>
+</head>
+
+<body>
+    <nav class="navbar navbar-light navbar-expand-md bg-dark" style="height: 80px;">
+        <div class="container-fluid">
+			<a href="/store/index" class="navbar-brand d-flex" style="color: var(--bs-light);font-size: 30px;">
+                <span class="bs-icon-sm bs-icon-rounded bs-icon-primary d-flex me-2 bs-icon" style="font-size: 20px;">LANCH MAP</span>
+            </a>
+            <div class="collapse navbar-collapse" id="navcol-1" style="width: 500px;">
+            </div>
+        </div>
+    </nav>
+    <!-- ステータスメッセージ表示用 -->
+    <div th:if="${statusMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+	    <span th:text="${statusMessage}"></span>
+	    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+
+    <div class="card">
+        <div class="card-header d-flex align-items-center">
+            <span style="font-size: 18px;text-align: right;margin-left: 10px;"><strong>店舗登録フォーム </strong></span>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="row" style="border: 2px solid #e2e2e2; border-radius: 10px; padding: 20px; max-width: 1200px; margin: auto;">
+                
+                    <!-- 店舗登録フォーム -->
+                    <form id="registerForm" th:object="${storeForm}" action="#" th:action="${storeForm.storeId != 0 ? '/register/update' : '/register/create'}" method="post" enctype="multipart/form-data">
+					    <!-- 店舗名 -->
+					    <div class="mb-3">
+					        <label for="storeName" class="form-label">店舗名<span class="bg-danger text-white ms-2 p-1" style="font-size: 12px;">必須</span></label>
+					        <input type="text" class="form-control" id="storeName" name="storeName" th:field="*{storeName}" th:classappend="${#fields.hasErrors('storeName')} ? 'error-border' : ''">
+					        <div class="form-error-text" th:if="${#fields.hasErrors('storeName')}">
+					            <svg focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px;">
+					                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+					            </svg>
+					            <span class="form-error-text" th:if="${#fields.hasErrors('storeName')}" th:errors="*{storeName}"></span>
+					        </div>
+					    </div>
+
+                        <!-- 店舗の電話番号 -->
+                        <div class="mb-3">
+                            <label for="storePhoneNumber" class="form-label">電話番号</label>
+                            <input type="text" class="form-control" id="storePhoneNumber" name="storePhoneNumber" th:field="*{storePhoneNumber}" th:classappend="${#fields.hasErrors('storePhoneNumber')} ? 'error-border' : ''">
+                            <div class="form-error-text" th:if="${#fields.hasErrors('storePhoneNumber')}">
+                                <svg focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px;">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                                </svg>
+                            	<span class="form-error-text" th:if="${#fields.hasErrors('storePhoneNumber')}" th:errors="*{storePhoneNumber}"></span>
+                            </div>
+                        </div>
+
+                        <!-- 店舗の住所 -->
+                        <div class="mb-3">
+                            <label for="storeAddress" class="form-label">住所</label><span class="bg-danger text-white ms-2 p-1" style="font-size: 12px;">必須</span></label>
+                            <input type="text" class="form-control" id="storeAddress" name="storeAddress" th:field="*{storeAddress}" th:classappend="${#fields.hasErrors('storeAddress')} ? 'error-border' : ''">
+                            <div class="form-error-text" th:if="${#fields.hasErrors('storeAddress')}">
+                                <svg focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px;">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                                </svg>
+                            	<span class="form-error-text" th:if="${#fields.hasErrors('storeAddress')}" th:errors="*{storeAddress}"></span>
+                            </div>
+                        </div>
+
+                        <!-- 店舗のURL -->
+                        <div class="mb-3">
+                            <label for="storeUrl" class="form-label">店舗URL</label>
+                            <input type="text" class="form-control" id="storeUrl" name="storeUrl" th:field="*{storeUrl}" th:classappend="${#fields.hasErrors('storeUrl')} ? 'error-border' : ''">
+                            <div class="form-error-text" th:if="${#fields.hasErrors('storeUrl')}">
+                                <svg focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px;">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                                </svg>
+                            	<span class="form-error-text" th:if="${#fields.hasErrors('storeUrl')}" th:errors="*{storeUrl}"></span>
+                            </div>
+                        </div>
+
+                        <!-- 店舗の営業日 -->
+                        <div class="mb-3">
+                            <label for="storeBusinessDay" class="form-label">営業日</label>
+<!--                            <div id="storeBusinessDay" th:each="day : ${sessionData.daysOfWeek}">-->
+<!--                                <div class="form-check">-->
+<!--									<input class="form-check-input" type="checkbox" th:id="${day}" th:value="${day}" name="storeBusinessDay" th:checked="${storeForm.storeBusinessDaysList.contains(day)}"/>-->
+<!--                                    <label class="form-check-label" th:for="${day}" th:text="${day}"></label>-->
+<!--                                </div>-->
+<!--                            </div>-->
+
+								<div id="storeBusinessDay" th:each="day : ${sessionData.daysOfWeek}">
+									<div class="form-check">
+									    <input type="checkbox" th:field="*{storeBusinessDaysList}" th:value="${day}" />
+									    <label th:for="${#ids.prev('storeBusinessDaysList')}" th:text="${day}"></label>
+									</div>
+								</div>
+
+                            <div class="form-error-text" th:if="${#fields.hasErrors('storeBusinessDay')}">
+                                <svg focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px;">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                                </svg>
+                            	<span class="form-error-text" th:if="${#fields.hasErrors('storeBusinessDay')}" th:errors="*{storeBusinessDay}"></span>
+                            </div>
+                        </div>
+                            
+                        <!-- 店舗の営業時間 -->
+                        <div class="mb-3">
+                            <label for="storeBusinessHours" class="form-label">営業時間</label>
+                            <div class="d-flex align-items-center">
+                                <input type="time" class="form-control" id="storeBusinessStartHours" name="storeBusinessStartHours" style="margin-right: 5px;" th:field="*{storeBusinessStartHours}" th:classappend="${#fields.hasErrors('storeBusinessStartHours')} ? 'error-border' : ''">
+                                <div>-</div>
+                                <input type="time" class="form-control" id="storeBusinessEndHours" name="storeBusinessEndHours" style="margin-left: 5px;" th:field="*{storeBusinessEndHours}" th:classappend="${#fields.hasErrors('storeBusinessEndHours')} ? 'error-border' : ''">
+                            </div>
+                            <div class="form-error-text" th:if="${#fields.hasErrors('storeBusinessStartHours') or #fields.hasErrors('storeBusinessEndHours')}">
+                                <svg focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px;">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                                </svg>
+                            	<span class="form-error-text" th:if="${#fields.hasErrors('storeBusinessStartHours')}" th:errors="*{storeBusinessStartHours}"></span>
+                            	<span class="form-error-text" th:if="${#fields.hasErrors('storeBusinessEndHours')}" th:errors="*{storeBusinessEndHours}"></span>
+                            </div>
+                        </div>
+
+                        <!-- 店舗の定休日 -->
+                        <div class="mb-3">
+                            <label for="storeRegularClosingDay" class="form-label">定休日（曜日）</label>
+                            <select id="storeRegularClosingDay" th:field="*{storeRegularClosingDay}" name="storeRegularClosingDay" class="form-control">
+                                <option value="">定休日を選択してください</option>
+                                <option th:each="day : ${sessionData.daysOfWeek}" th:value="${day}" th:text="${day}" th:selected="${storeRegularClosingDay == day}"></option>
+                            </select>
+                            <div class="form-error-text" th:if="${#fields.hasErrors('storeRegularClosingDay')}">
+                                <svg focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px;">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                                </svg>
+                            	<span class="form-error-text" th:if="${#fields.hasErrors('storeRegularClosingDay')}" th:errors="*{storeRegularClosingDay}"></span>
+                            </div>
+                        </div>
+
+                        <!-- 店舗画像 -->
+                        <div class="mb-3">
+                            <label for="storeImageData" class="form-label">店舗画像</label>
+                            <input type="file" class="form-control" id="storeImageData" name="storeImageData" accept="image/*">
+                            <div class="form-error-text" th:if="${#fields.hasErrors('storeImageData')}">
+                                <svg focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px;">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                                </svg>
+                            	<span class="form-error-text" th:if="${#fields.hasErrors('storeImageData')}" th:errors="*{storeImageData}"></span>
+                            </div>
+                        </div>
+                        <div id="image-hidden"></div>
+                        <input type="hidden" id="croppedStoreImage" name="croppedStoreImage">
+        
+                        <!-- 店舗の説明 -->
+                        <div class="mb-3">
+                            <label for="storeDescription" class="form-label">店舗の説明</label>
+                            <textarea class="form-control" id="storeDescription" name="storeDescription" rows="2" th:field="*{storeDescription}" th:classappend="${#fields.hasErrors('storeDescription')} ? 'error-border' : ''"></textarea>
+                            <div class="form-error-text" th:if="${#fields.hasErrors('storeDescription')}">
+                                <svg focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px;">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                                </svg>
+                            	<span class="form-error-text" th:if="${#fields.hasErrors('storeDescription')}" th:errors="*{storeDescription}"></span>
+                            </div>
+                        </div>
+        
+                        <!-- ジャンルのプルダウンメニュー -->
+                        <div class="mb-3">
+                            <label for="genreId" class="form-label">ジャンル<span class="bg-danger text-white ms-2 p-1" style="font-size: 12px;">必須</span></label>
+                            <select id="genreId" th:field="*{genreId}" class="form-control">
+                                <option value="0" th:selected="${genreId == 0}">選択してください</option>
+                                <option th:each="genreInfo : ${sessionData.genreList}" th:value="${genreInfo.genreId}" th:text="${genreInfo.genreName}" th:selected="${genreId == genreInfo.genreId}"></option>
+                            </select>
+                            <div class="form-error-text" th:if="${#fields.hasErrors('genreId')}">
+                                <svg focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px;">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                                </svg>
+                            	<span class="form-error-text" th:if="${#fields.hasErrors('genreId')}" th:errors="*{genreId}"></span>
+                            </div>			    
+                        </div>
+                        
+                        <!-- 距離のプルダウンメニュー -->
+                        <div class="mb-3">
+                            <label for="distanceId" class="form-label">距離<span class="bg-danger text-white ms-2 p-1" style="font-size: 12px;">必須</span></label>
+                            <select id="distanceId" th:field="*{distanceId}" class="form-control">
+                                <option value="0" th:selected="${distanceId == 0}">選択してください</option>
+                                <option th:each="distanceInfo : ${sessionData.distanceList}" th:value="${distanceInfo.distanceId}" th:text="${distanceInfo.distanceName}" th:selected="${distanceId == distanceInfo.distanceId}"></option>
+                            </select>
+                            <div class="form-error-text" th:if="${#fields.hasErrors('distanceId')}">
+                                <svg focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px;">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                                </svg>
+                            	<span class="form-error-text" th:if="${#fields.hasErrors('distanceId')}" th:errors="*{distanceId}"></span>
+                            </div>
+                        </div>
+                        
+                        <!-- 評価スターのプルダウンメニュー -->
+                        <div class="mb-3">
+                            <label for="evaluationStarId" class="form-label">評価<span class="bg-danger text-white ms-2 p-1" style="font-size: 12px;">必須</span></label>
+                            <select id="evaluationStarId" th:field="*{evaluationStarId}" class="form-control">
+                                <option value="0" th:selected="${evaluationStarId == 0}">選択してください</option>
+                                <option th:each="evaluationInfo : ${sessionData.evaluationStarList}" th:value="${evaluationInfo.evaluationStarId}" th:text="${evaluationInfo.evaluationStarCount}" th:selected="${evaluationStarId == evaluationInfo.evaluationStarId}"></option>
+                            </select>
+                            <div class="form-error-text" th:if="${#fields.hasErrors('evaluationStarId')}">
+                                <svg focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px;">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                                </svg>
+                            	<span class="form-error-text" th:if="${#fields.hasErrors('evaluationStarId')}" th:errors="*{evaluationStarId}"></span>
+                            </div>
+                        </div>
+
+                        <div class="row justify-content-center" style="max-width: 1150px; margin: auto;">
+                            <button type="submit" class="btn btn-primary" id="registerButton" style="background-color: #3f87da;">登録</button>                
+                        </div>
+                        
+						<!-- storeId -->
+                        <input type="hidden" id="storeId" name="storeId" th:field="*{storeId}" />
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js" th:src="@{https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js}"></script>
+    <script src="../static/bootstrap/js/bootstrap.min.js" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+    <script src="../static/js/card-header-with-tooltip-and-icon-theme.js" th:src="@{/js/card-header-with-tooltip-and-icon-theme.js}"></script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.station.lunch.mapper.SearchRegisterMapper">
+	
+	<resultMap id="selectStoreResultMap" type="com.station.lunch.dto.StoreDto">
+	    <result property="storeId" column="ID" />
+	    <result property="storeName" column="NAME" />
+	    <result property="storePhoneNumber" column="PHONE_NUMBER" />
+	    <result property="storeAddress" column="ADDRESS" />
+	    <result property="storeUrl" column="STORE_URL" />
+	    <result property="storeBusinessDay" column="BUSINESS_DAY" />
+	    <result property="storeBusinessHours" column="BUSINESS_HOURS" />
+	    <result property="storeRegularClosingDay" column="REGULAR_CLOSING_DAY" />
+	    <result property="storeImageData" column="IMAGE_DATA" jdbcType="BINARY" />
+	    <result property="storeDescription" column="DESCRIPTION" />
+	    <result property="genreId" column="GENRE_ID" />
+	    <result property="genreName" column="GENRE_NAME" />
+	    <result property="distanceId" column="DISTANCE_ID" />
+	    <result property="distanceName" column="DISTANCE_NAME" />
+	    <result property="evaluationStarId" column="EVALUATION_STAR_ID" />
+	    <result property="evaluationStarCount" column="EVALUATION_STAR_COUNT" jdbcType="DECIMAL" />
+	</resultMap>
+
+	<!-- 店舗情報登録-->
+    <insert id="insertStore" parameterType="com.station.lunch.dto.StoreDto">
+        INSERT
+			INTO
+			STORES (
+			NAME,
+			PHONE_NUMBER,
+			ADDRESS,
+			STORE_URL,
+			BUSINESS_DAY,
+			BUSINESS_HOURS,
+			REGULAR_CLOSING_DAY,
+			IMAGE_DATA,
+			DESCRIPTION,
+			GENRE_ID,
+			DISTANCE_ID,
+			EVALUATION_STAR_ID,
+			CREATE_USER,
+			CREATE_PROCESS,
+			CREATE_DATE,
+			UPDATE_USER,
+			UPDATE_PROCESS,
+			UPDATE_DATE,
+			DELETE_FLAG
+			)
+        VALUES
+        (
+	        #{storeName}, 
+	        #{storePhoneNumber},
+	        #{storeAddress},
+	        #{storeUrl},
+	        #{storeBusinessDay},
+	        #{storeBusinessHours},
+	        #{storeRegularClosingDay},
+	        #{storeImageData},
+	        #{storeDescription},
+	        #{genreId},
+	        #{distanceId},
+	        #{evaluationStarId},
+	        #{createUser},
+	        #{createProcess},
+	        #{createDate},
+	        #{updateUser},
+	        #{updateProcess},
+	        #{updateDate},
+	        #{deleteFlag}
+        )
+    </insert>
+    
+    <!-- 店舗情報更新 -->
+	<update id="updateStore" parameterType="com.station.lunch.dto.StoreDto">
+	    UPDATE
+	        STORES
+	    SET
+	        NAME = #{storeName},
+	        PHONE_NUMBER = #{storePhoneNumber},
+	        ADDRESS = #{storeAddress},
+	        STORE_URL = #{storeUrl},
+	        BUSINESS_DAY = #{storeBusinessDay},
+	        BUSINESS_HOURS = #{storeBusinessHours},
+	        REGULAR_CLOSING_DAY = #{storeRegularClosingDay},
+	        IMAGE_DATA = #{storeImageData},
+	        DESCRIPTION = #{storeDescription},
+	        GENRE_ID = #{genreId},
+	        DISTANCE_ID = #{distanceId},
+	        EVALUATION_STAR_ID = #{evaluationStarId},
+	        UPDATE_USER = #{updateUser},
+	        UPDATE_PROCESS = #{updateProcess},
+	        UPDATE_DATE = #{updateDate}
+	    WHERE
+	        ID = #{storeId}
+	</update>
+	
+	<!-- 店舗情報選択 -->
+	<select id="selectStore" parameterType="Long" resultMap="selectStoreResultMap">
+	    SELECT
+	        STORES.ID,
+	        STORES.NAME,
+	        STORES.PHONE_NUMBER,
+	        STORES.ADDRESS,
+	        STORES.STORE_URL,
+	        STORES.BUSINESS_DAY,
+	        STORES.BUSINESS_HOURS,
+	        STORES.REGULAR_CLOSING_DAY,
+	        STORES.IMAGE_DATA,
+	        STORES.DESCRIPTION,
+	        STORES.GENRE_ID,
+	        GENRES.GENRE_NAME,
+	        STORES.DISTANCE_ID,
+	        DISTANCES.DISTANCE_NAME,
+	        STORES.EVALUATION_STAR_ID,
+	        EVALUATION_STARS.EVALUATION_STAR_COUNT
+	    FROM
+	        STORES
+	    LEFT JOIN
+	        GENRES ON STORES.GENRE_ID = GENRES.ID
+	    LEFT JOIN
+	        DISTANCES ON STORES.DISTANCE_ID = DISTANCES.ID
+	    LEFT JOIN
+	        EVALUATION_STARS ON STORES.EVALUATION_STAR_ID = EVALUATION_STARS.ID
+	    WHERE
+	        STORES.ID = #{storeId}
+	</select>
+
+</mapper>

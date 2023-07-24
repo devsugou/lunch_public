@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/lunch_db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+  mybatis:
+    type-aliases-package: com.station.lunch.model
+    mapper-locations: classpath:mapper/*.xml
+  jackson:
+    time-zone: Asia/Tokyo
+  # redis:
+  #   host: redis
+  #   port: 6379
+
+server:
+  address: 0.0.0.0
+  port: 8080
+logging:
+  file:
+    name: /app/log/app.log
+  level:
+    root: info

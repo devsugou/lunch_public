@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.station.lunch.mapper.SearchIndexMapper">
+
+    <!-- 店舗一覧取得結果マッピング定義 -->
+    <resultMap id="selectStoreResultMap" type="com.station.lunch.dto.StoreDto">
+        <result property="storeId" column="ID" />
+        <result property="storeName" column="NAME" />
+        <result property="storePhoneNumber" column="PHONE_NUMBER" />
+        <result property="storeAddress" column="ADDRESS" />
+        <result property="storeUrl" column="STORE_URL" />
+        <result property="storeBusinessDay" column="BUSINESS_DAY" />
+        <result property="storeBusinessHours" column="BUSINESS_HOURS" />
+        <result property="storeRegularClosingDay" column="REGULAR_CLOSING_DAY" />
+        <result property="storeImageData" column="IMAGE_DATA" />
+        <result property="storeDescription" column="DESCRIPTION" />
+        <result property="genreId" column="GENRE_ID" />
+        <result property="genreName" column="GENRE_NAME" />
+        <result property="distanceId" column="DISTANCE_ID" />
+        <result property="distanceName" column="DISTANCE_NAME" />
+        <result property="evaluationStarId" column="EVALUATION_STAR_ID" />
+        <result property="evaluationStarCount" column="EVALUATION_STAR_COUNT" />
+    </resultMap>
+
+    <!-- メニュー一覧取得結果マッピング定義 -->
+    <resultMap id="selectMenuResultMap" type="com.station.lunch.dto.MenuDetailDto">
+        <result property="menuId" column="id" />
+        <result property="menuName" column="name" />
+        <result property="menuPrice" column="price" />
+        <result property="menuImageUrl" column="image_url" />
+        <result property="storeid" column="store_id" />
+    </resultMap>
+
+    <!-- 店舗一覧取得SQL -->
+    <select id="selectStore" resultMap="selectStoreResultMap">
+        SELECT
+            STORES.ID,
+            STORES.NAME,
+            STORES.PHONE_NUMBER,
+            STORES.ADDRESS,
+            STORES.STORE_URL,
+            STORES.BUSINESS_DAY,
+            STORES.BUSINESS_HOURS,
+            STORES.REGULAR_CLOSING_DAY,
+            STORES.IMAGE_DATA,
+            STORES.DESCRIPTION,
+            STORES.GENRE_ID,
+            STORES.DISTANCE_ID,
+            STORES.EVALUATION_STAR_ID,
+            GENRES.GENRE_NAME,
+            EVALUATION_STARS.EVALUATION_STAR_COUNT,
+            DISTANCES.DISTANCE_NAME
+        FROM
+            STORES
+        INNER JOIN GENRES
+        ON
+            STORES.GENRE_ID = GENRES.ID
+        INNER JOIN EVALUATION_STARS
+        ON
+            STORES.EVALUATION_STAR_ID = EVALUATION_STARS.ID
+        INNER JOIN DISTANCES
+        ON
+            STORES.DISTANCE_ID = DISTANCES.ID
+        <where>
+            <include refid="DeleteFlagCheck"/>
+            <if test='keyword != null and keyword != ""' >
+                AND NAME LIKE #{keyword}
+            </if>
+            <if test='genreId != null and genreId != "" and genreId != 0'>
+                AND STORES.GENRE_ID = #{genreId}
+            </if>
+            <if test='evaluationStarCount != null and evaluationStarCount != "" and evaluationStarCount != 0'>
+                AND EVALUATION_STARS.EVALUATION_STAR_COUNT >= #{evaluationStarCount}
+            </if>
+            <if test='distanceId != null and distanceId != "" and distanceId != 0'>
+                AND STORES.DISTANCE_ID = #{distanceId}
+            </if>    
+        </where>
+        ORDER BY STORES.ID ASC
+    </select>
+
+    <!-- メニュー一覧取得SQL -->
+    <select id="selectMenu" resultMap="selectMenuResultMap">
+        SELECT
+            id,
+            store_id,
+            name,
+            price,
+            image_url
+        FROM
+            menu_items
+        WHERE
+            store_id = #{storeId}
+            AND delete_flag = '0'
+    </select>
+    
+	<!-- 店舗情報削除-->
+    <update id="deleteStore" parameterType="int">
+		UPDATE stores
+		SET delete_flag = '1'
+		WHERE id = #{storeId}
+	</update>
+    
+    <sql id="DeleteFlagCheck">
+        STORES.DELETE_FLAG = '0' AND GENRES.DELETE_FLAG = '0' AND EVALUATION_STARS.DELETE_FLAG = '0' AND DISTANCES.DELETE_FLAG = '0'
+    </sql>
+</mapper>

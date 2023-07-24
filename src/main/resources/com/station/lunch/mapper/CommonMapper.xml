@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.station.lunch.mapper.CommonMapper">
+    <!-- ジャンル一覧取得結果マッピング定義 -->
+    <resultMap id="selectGenreResultMap" type="com.station.lunch.dto.GenreDto">
+        <result property="genreId" column="ID" />
+        <result property="genreName" column="GENRE_NAME" />
+    </resultMap>
+
+    <!-- 距離一覧取得結果マッピング定義 -->
+    <resultMap id="selectDistanceResultMap" type="com.station.lunch.dto.DistanceDto">
+        <result property="distanceId" column="ID" />
+        <result property="distanceName" column="DISTANCE_NAME" />
+    </resultMap>
+    
+    <!-- 評価一覧取得結果マッピング定義 -->
+    <resultMap id="selectEvaluationStarResultMap" type="com.station.lunch.dto.EvaluationDto">
+        <result property="evaluationStarId" column="ID" />
+        <result property="evaluationStarCount" column="EVALUATION_STAR_COUNT" />
+    </resultMap>    
+
+    <!-- ジャンル一覧取得SQL -->
+    <select id="selectGenre" resultMap="selectGenreResultMap">
+        SELECT
+            ID,
+            GENRE_NAME
+        FROM
+            GENRES
+        WHERE
+            <include refid="DeleteFlagCheck"/>
+    </select>
+
+    <!-- 検索用評価一覧取得SQL-->
+    <select id="selectEvaluationStarBySearch" resultType="java.lang.Integer">
+        SELECT DISTINCT
+            ROUND(EVALUATION_STAR_COUNT) AS EVALUATION_STAR_COUNT
+        FROM
+            EVALUATION_STARS
+        WHERE
+            <include refid="DeleteFlagCheck"/>
+    </select>
+    
+	<!-- 登録用評価一覧取得SQL-->
+	<select id="selectEvaluationStarByCreate" resultMap="selectEvaluationStarResultMap">
+	    SELECT DISTINCT
+	    	ID,
+	        EVALUATION_STAR_COUNT
+	    FROM
+	        EVALUATION_STARS
+	    WHERE
+	        <include refid="DeleteFlagCheck"/>
+	</select>
+
+    <!-- 距離一覧取得SQL -->
+    <select id="selectDistance" resultMap="selectDistanceResultMap">
+        SELECT
+            ID,
+            DISTANCE_NAME
+        FROM
+            DISTANCES
+        WHERE
+            <include refid="DeleteFlagCheck"/>
+    </select>
+
+    <!-- 共通のSQLフラグメント、削除フラグ無 -->
+    <sql id="DeleteFlagCheck">
+      DELETE_FLAG = '0'
+    </sql>
+
+</mapper>

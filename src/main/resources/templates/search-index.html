@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" th:fragment="meta"/>
+    <title>Lanth Map</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css}"/>
+    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css" th:href="@{/bootstrap/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" th:href="@{https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i}"/>
+    <link rel="stylesheet" href="../static/fonts/fontawesome-all.min.css" th:href="@{/fonts/fontawesome-all.min.css}"/>
+    <link rel="stylesheet" href="../static/fonts/font-awesome.min.css" th:href="@{/fonts/font-awesome.min.css}"/>
+    <link rel="stylesheet" href="../static/fonts/fontawesome5-overrides.min.css" th:href="@{/fonts/fontawesome5-overrides.min.css}"/>
+    <link rel="stylesheet" href="../static/css/User-Payment-Overview-Rows---Panel-Container.css" th:href="@{/css/User-Payment-Overview-Rows---Panel-Container.css}"/>
+    <link rel="stylesheet" href="../static/css/style.css" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css}"/>
+</head>
+</head>
+
+<body>
+    <form action="#" th:action="@{/store/handle}" th:object="${searchForm}" method="get">
+        <nav class="navbar navbar-light navbar-expand-md bg-dark" style="height: 80px;">
+            <div class="container-fluid">
+				<a href="/store/index" class="navbar-brand d-flex" style="color: var(--bs-light);font-size: 30px;">
+                	<span class="bs-icon-sm bs-icon-rounded bs-icon-primary d-flex me-2 bs-icon" style="font-size: 20px;">LANCH MAP</span>
+                </a>
+                <div class="collapse navbar-collapse" id="navcol-1" style="width: 500px;">
+                    <div class="d-flex align-items-center mx-auto">
+                        <ul class="navbar-nav">
+                            <!-- ジャンル検索用プルダウン -->
+                            <li class="nav-item dropdown">
+                                <select id="selectedGenreName" th:field="*{searchGenreId}" class="form-select" style="width: 160px; margin-right: 10px; font-size: 15px;">
+                                    <option value="0" th:selected="${searchGenreId == 0}">全てのジャンル</option>
+                                    <option th:each="genreInfo : ${sessionData.genreList}" th:value="${genreInfo.genreId}" th:text="${genreInfo.genreName}" th:selected="${searchGenreId == genreInfo.genreId}"></option>
+                                </select>
+                            </li>
+                            <!-- 評価検索用プルダウン -->
+                            <li class="nav-item dropdown">
+                                <select id="selectedEvaluationStarName" th:field="*{searchEvaluationStarCount}" class="form-select" style="width: 160px; margin-right: 10px; font-size: 15px;">
+                                    <option value="0" th:selected="${searchEvaluationStarCount == 0}">全ての評価</option>
+                                    <option th:each="evaluationStarEntry : ${sessionData.evaluationStarMap.entrySet()}" th:value="${evaluationStarEntry.key}" th:text="${evaluationStarEntry.value + '以上'}" th:selected="${searchEvaluationStarCount == evaluationStarEntry.key}"></option>
+                                </select>
+                            </li>
+                            <!-- エリア検索用プルダウン -->
+                            <li class="nav-item dropdown">
+                                <select id="selectedDistanceName" th:field="*{searchDistanceId}" class="form-select" style="width: 160px; margin-right: 10px; font-size: 15px;">
+                                    <option value="0" th:selected="${searchDistanceId == 0}">全てのエリア</option>
+                                    <option th:each="distanceInfo : ${sessionData.distanceList}" th:value="${distanceInfo.distanceId}" th:text="${distanceInfo.distanceName}" th:selected="${searchDistanceId == distanceInfo.distanceId}"></option>
+                                </select>
+                            </li>
+                             <!-- hidden項目 -->
+                             <input type="hidden" id="searchGenreId" name="searchGenreId" th:value="${searchForm.searchGenreId}" />
+                             <input type="hidden" id="searchEvaluationStarCount" name="searchEvaluationStarCount" th:value="${searchForm.searchEvaluationStarCount}" />
+                             <input type="hidden" id="searchDistanceId" name="searchDistanceId" th:value="${searchForm.searchDistanceId}" />
+                        </ul>
+                        <!-- フリー検索 -->
+                        <input type="search" class="form-control" style="margin: 3px;width: 270px;height: 36px; text-align: center; margin-right: 10px; font-size: 15px;" placeholder="キーワード[例:焼肉、店名、個室]" name="searchkeyword" th:value="${searchForm.searchkeyword}">
+                        <button value="storeSearch" name="action" class="btn btn-primary" type="submit" style="height: 36px;width: 45px;font-size: 17px; background-color: #3f87da;"><i class="fas fa-search" style="font-size: 17px;"></i></button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <!-- ステータスメッセージ表示用 -->
+        <div th:if="${statusMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+		    <span th:text="${statusMessage}"></span>
+		    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		</div>
+
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <span style="font-size: 18px;text-align: right;margin-left: 10px;"><strong>店舗一覧</strong></span>
+            	<!-- 登録ボタン -->
+				<button value="registerIndex" name="action" class="btn btn-primary ms-auto" type="submit" style="height: 38px; background-color: #3f87da;font-size: 14px"><i class="fa fa-plus"></i>&nbsp;登録</button>
+            </div>
+            <div class="card-body">
+                <p>
+                    <label style="font-size: 14px;">1～20 件を表示 ／ </label>
+                    <label style="font-size: 14px;" th:text="${#numbers.formatInteger(searchForm.totalStoresCount, 3, 'COMMA')}"/>
+                    <label style="font-size: 14px;">件</label>
+                </p>
+                <div class="row">
+                    <div th:each="storeDto : ${searchForm.storeDtoList}" class="col-md-12" style="margin-bottom: 40px;">
+                        <div class="row" style="border: 2px solid #e2e2e2; border-radius: 10px; padding: 20px; max-width: 1200px; margin: auto;">
+                            <!-- 店舗情報 -->
+                            <div class="col-md-5" style="max-width: 485px;">
+                                <div class="d-flex media" style="height: 200px">
+									<div>
+									    <img th:if="${#strings.trim(storeDto.encodedImageData) != ''}" th:src="'data:image/jpeg;base64,' + ${storeDto.encodedImageData}" style="width: 190px;height: 190px;margin: 0px;margin-right: 10px;margin-left: 10px;padding: 10px;">
+									    <img th:if="${#strings.trim(storeDto.encodedImageData) == ''}" src="../static/img/no_image.jpg" th:src="@{/img/no_image.jpg}" style="width: 190px;height: 190px;margin: 0px;margin-right: 10px;margin-left: 10px;padding: 10px;">
+									</div>
+                                    <div class="media-body">
+                                        <h5>
+                                            <a href="#"><strong><span style="color:#3f87da;" th:text="${storeDto.storeName}">THE MOST CODDEE&nbsp;</span></strong></a>
+                                        </h5>
+							            <p class="text-muted" style="margin-bottom: 10px;">
+							                <th:block th:each="i: ${#numbers.sequence(1, storeDto.evaluationStarCount.intValue())}">
+							                    <span class="fa fa-star" style="margin: -2px; color: #c5d307;"></span>
+							                </th:block>
+							                <th:block th:if="${storeDto.evaluationStarCount % 1 >= 0.5}">
+							                    <span class="fa fa-star-half-o" style="margin: -2px; color: #cfd307;"></span>
+							                </th:block>
+							                <th:block th:each="i: ${#numbers.sequence(storeDto.evaluationStarCount.intValue() + ((storeDto.evaluationStarCount % 1 >= 0.5) ? 2 : 1), 5)}">
+							                    <span class="fa fa-star-o" style="margin: -2px; color: #c5d307;"></span>
+							                </th:block>
+							                <!-- Review count and link -->
+							                <a href="#reviewSection">
+							                    <span class="fa fa-chevron-down" style="margin-left: 4px; font-size:3px; vertical-align: super;"></span>
+							                    <!-- <span th:text="${storeDto.reviewCount}">12</span> -->
+							                    <span>12</span>
+							                </a>
+							            </p>
+                                        <p class="text-muted" style="margin-bottom: 10px;"><strong>ジャンル：</strong><label th:text="${storeDto.genreName}">ラーメン</label><br></p>
+                                        <p class="text-muted" style="margin-bottom: 10px;"><strong>住所：</strong><label th:text="${storeDto.storeAddress}">東京都新宿3-4-2</label><br></p>
+                                        <p class="text-muted" style="margin-bottom: 10px;"><strong>パークタワーからの距離：</strong><label th:text="${storeDto.distanceName}">151-200m</label><br></p>
+                                        <p class="text-muted" style="margin-bottom: 10px;"><strong>営業時間：</strong><label th:text="${storeDto.storeBusinessHours}">11:00 - 21:00</label><br></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- メニュー情報 -->
+                            <div class="col-md-4" style="max-width: 388x;">
+                                <div th:each="menuDetailInfo : ${storeDto.menuDetailInfoList}">
+                                    <p class="text-muted" style="margin-bottom: 10px;"><strong th:text="${menuDetailInfo.menuName}">コーヒー</strong><strong>：</strong>
+                                        <label>\</label><label class="text-muted" th:text="${menuDetailInfo.menuPrice}">150</label></p>
+                                </div>
+                                <div class="media-body"></div>
+                            </div>
+                            <div class="col-md-3 text-end" style="max-width: 160px;">
+                                <div class="btn-group" role="group">
+									<!--編集ボタン-->
+									<a class="btn btn-primary" role="button" style="background-color: #3f87da; font-size: 14px" th:href="@{'/register/edit/' + ${storeDto.storeId}}"><i class="fa fa-pencil"></i></a>
+									<!--メニュー追加ボタン-->
+									<button class="btn btn-primary addBtn" type="button" style="background-color: #3f87da;" th:data-storeid="${storeDto.storeId}" th:data-storename="${storeDto.storeName}"> <i class="fa fa-plus"></i></button>
+									<!--削除ボタン-->
+                                    <button class="btn btn-primary deleteBtn" type="button" style="background-color: #3f87da;" data-bs-toggle="modal" data-bs-target="#deleteModal" th:data-storeid="${storeDto.storeId}" th:data-storename="${storeDto.storeName}"> <i class="fa fa-trash-o"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center" style="max-width: 1150px; margin: auto;">
+                    <div class="col-md-12">
+                        <nav>
+                            <ul class="pagination">
+                                <li class="page-item"><a class="page-link" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+                                <li class="page-item active"><a class="page-link">1</a></li>
+                                <li class="page-item"><a class="page-link">2</a></li>
+                                <li class="page-item"><a class="page-link">3</a></li>
+                                <li class="page-item"><a class="page-link">4</a></li>
+                                <li class="page-item"><a class="page-link">5</a></li>
+                                <li class="page-item"><a class="page-link" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <!-- 店舗情報削除確認モーダル -->
+    <div th:insert="store-delete :: store-delete-content"></div>
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js" th:src="@{https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js}"></script>
+    <script src="../static/bootstrap/js/bootstrap.min.js" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+    <script src="../static/js/card-header-with-tooltip-and-icon-theme.js" th:src="@{/js/card-header-with-tooltip-and-icon-theme.js}"></script>
+    <script src="../static/js/searchindex.js" th:src="@{/js/searchindex.js}"></script>
+</body>
+</html>
